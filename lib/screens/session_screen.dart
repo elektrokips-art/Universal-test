@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../l10n/app_strings.dart';
 import '../l10n/locale_provider.dart';
 import '../models/submission.dart';
 import '../models/test_recipe.dart';
@@ -34,7 +35,9 @@ class _SessionScreenState extends State<SessionScreen> {
 
   Future<void> _start() async {
     try {
-      final ip = await _server.start(widget.recipe);
+      final locale = context.read<LocaleProvider>();
+      final lang = locale.language == AppLanguage.uz ? 'uz' : 'ru';
+      final ip = await _server.start(widget.recipe, lang: lang);
       _sub = _server.onSubmission.listen((s) {
         setState(() => _submissions.add(s));
       });
@@ -50,9 +53,21 @@ class _SessionScreenState extends State<SessionScreen> {
     }
   }
 
+  bool _stopping = false;
+
+  Future<void> _handleStop() async {
+    if (_stopping) return;
+    _stopping = true;
+    await _sub?.cancel();
+    await _server.stop();
+    if (mounted) Navigator.of(context).pop();
+  }
+
   @override
   void dispose() {
     _sub?.cancel();
+    // Best-effort fallback in case the screen was left some other way
+    // (e.g. system back gesture) without going through _handleStop.
     _server.stop();
     super.dispose();
   }
@@ -62,11 +77,17 @@ class _SessionScreenState extends State<SessionScreen> {
     final locale = context.watch<LocaleProvider>();
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          tooltip: locale.t('stopSession'),
+          onPressed: _handleStop,
+          icon: const Icon(Icons.arrow_back),
+        ),
         title: Text(widget.recipe.name),
         actions: [
           IconButton(
             tooltip: locale.t('stopSession'),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: _handleStop,
             icon: const Icon(Icons.stop_circle),
           ),
         ],
