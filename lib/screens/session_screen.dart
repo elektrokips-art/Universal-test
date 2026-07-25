@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../l10n/app_strings.dart';
 import '../l10n/locale_provider.dart';
@@ -41,6 +42,9 @@ class _SessionScreenState extends State<SessionScreen> {
       _sub = _server.onSubmission.listen((s) {
         setState(() => _submissions.add(s));
       });
+      // Keep the screen on for the whole session — if it locks, Android
+      // freezes the app's background work and the local server drops.
+      await WakelockPlus.enable();
       setState(() {
         _url = ip != null ? 'http://$ip:${TestServer.port}' : null;
         _starting = false;
@@ -60,6 +64,7 @@ class _SessionScreenState extends State<SessionScreen> {
     _stopping = true;
     await _sub?.cancel();
     await _server.stop();
+    await WakelockPlus.disable();
     if (mounted) Navigator.of(context).pop();
   }
 
@@ -69,6 +74,7 @@ class _SessionScreenState extends State<SessionScreen> {
     // Best-effort fallback in case the screen was left some other way
     // (e.g. system back gesture) without going through _handleStop.
     _server.stop();
+    WakelockPlus.disable();
     super.dispose();
   }
 
