@@ -104,6 +104,7 @@ class _SessionScreenState extends State<SessionScreen> {
             : () => PdfService.generateAndShare(
                   recipe: widget.recipe,
                   submissions: _submissions,
+                  lang: locale.language,
                 ),
         icon: const Icon(Icons.picture_as_pdf),
         label: Text(locale.t('generatePdf')),
