@@ -101,6 +101,12 @@ class AppStrings {
       AppLanguage.uz:
           'O\'quvchilar QR-kodni skanerlab, tarmoqqa ulanadilar',
     },
+    'chromeWarningHint': {
+      AppLanguage.ru:
+          'Если браузер покажет предупреждение "Небезопасное соединение" — это нормально (нет интернета, не HTTPS). Нужно нажать "Продолжить" / "Перейти на сайт".',
+      AppLanguage.uz:
+          'Agar brauzer "Xavfsiz emas" degan ogohlantirish chiqarsa — bu normal holat (internet yo\'q, HTTPS emas). "Davom etish" / "Saytga o\'tish" tugmasini bosish kerak.',
+    },
     'ipAddress': {
       AppLanguage.ru: 'Адрес',
       AppLanguage.uz: 'Manzil',

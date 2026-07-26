@@ -148,6 +148,20 @@ class _SessionScreenState extends State<SessionScreen> {
                           style: const TextStyle(color: Colors.grey),
                         ),
                       ),
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.amber.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.amber, width: 0.7),
+                        ),
+                        child: Text(
+                          locale.t('chromeWarningHint'),
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ),
                     ] else
                       Center(child: Text(locale.t('ipAddress'))),
                     const Divider(height: 32),
